@@ -1,0 +1,22 @@
+{
+  "name": "graph-example",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.10.4",
+    "better-sqlite3": "^11.1.1",
+    "cors": "^2.8.5",
+    "dataloader": "^2.2.2",
+    "express": "^4.19.2",
+    "express-jwt": "^7.7.8",
+    "graphql": "^16.9.0",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
+    "nanoid": "^5.0.7"
+  }
+}
