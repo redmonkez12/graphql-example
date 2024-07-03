@@ -1,4 +1,4 @@
-import {getJob, getJobs, getJobsByCompany} from "./db/jobs";
+import {createJob, deleteJob, getJob, getJobs, getJobsByCompany, updateJob} from "./db/jobs";
 import {getCompany} from "./db/companies";
 import {GraphQLError} from "graphql/error/index";
 
@@ -24,6 +24,17 @@ export const resolvers = {
         },
         jobs: async () => {
             return getJobs();
+        },
+    },
+    Mutation: {
+        createJob: (_root, { input: { title, description }}) => {
+            createJob({ title, description });
+        },
+        deleteJob: (_root, { id }) => {
+            deleteJob(id);
+        },
+        updateJob: (_root, { input: { id, title, description }}) => {
+            return updateJob({ id, title, description });
         },
     },
     Company: {
