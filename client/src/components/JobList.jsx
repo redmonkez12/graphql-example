@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { formatDate } from '../lib/formatters';
+import PropTypes from "prop-types";
 
 function JobList({ jobs }) {
     return (
@@ -10,6 +11,17 @@ function JobList({ jobs }) {
         </ul>
     );
 }
+
+JobList.propTypes = {
+    jobs: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        title: PropTypes.string.isRequired,
+        company: PropTypes.shape({
+            name: PropTypes.string
+        }),
+        date: PropTypes.string.isRequired
+    })).isRequired
+};
 
 function JobItem({ job }) {
     const title = job.company
@@ -28,5 +40,16 @@ function JobItem({ job }) {
         </li>
     );
 }
+
+JobItem.propTypes = {
+    job: PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        title: PropTypes.string.isRequired,
+        company: PropTypes.shape({
+            name: PropTypes.string
+        }),
+        date: PropTypes.string.isRequired
+    }).isRequired
+};
 
 export default JobList;

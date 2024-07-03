@@ -1,82 +1,60 @@
-import { ApolloClient, ApolloLink, concat, createHttpLink, gql, InMemoryCache } from '@apollo/client';
-import { getAccessToken } from '../auth';
+import {GraphQLClient, gql } from "graphql-request";
 
-const httpLink = createHttpLink({ uri: 'http://localhost:9000/graphql' });
+const client = new GraphQLClient("http://localhost:9000/graphql");
 
-const authLink = new ApolloLink((operation, forward) => {
-  const accessToken = getAccessToken();
-  if (accessToken) {
-    operation.setContext({
-      headers: { 'Authorization': `Bearer ${accessToken}` },
-    });
-  }
-  return forward(operation);
-});
-
-export const apolloClient = new ApolloClient({
-  link: concat(authLink, httpLink),
-  cache: new InMemoryCache(),
-});
-
-const jobDetailFragment = gql`
-  fragment JobDetail on Job {
-    id
-    date
-    title
-    company {
-      id
-      name
-    }
-    description
-  }
-`;
-
-export const companyByIdQuery = gql`
-  query CompanyById($id: ID!) {
-    company(id: $id) {
-      id
-      name
-      description
-      jobs {
-        id
-        date
-        title
-      }
-    }
-  }
-`;
-
-export const jobByIdQuery = gql`
-  query JobById($id: ID!) {
-    job(id: $id) {
-      ...JobDetail
-    }
-  }
-  ${jobDetailFragment}
-`;
-
-export const jobsQuery = gql`
-  query Jobs($limit: Int, $offset: Int) {
-    jobs(limit: $limit, offset: $offset) {
-      items {
-        id
-        date
-        title
-        company {
-          id
-          name
+export async function getCompany(id) {
+    const query = gql`
+        query CompanyById($id: ID!) {
+            company(id: $id) {
+                id
+                name
+                description
+                jobs {
+                    id
+                    date
+                    title
+                }
+            }
         }
-      }
-      totalCount
-    }
-  }
-`;
+    `;
+    const { company } = await client.request(query, { id });
+    return company;
+}
 
-export const createJobMutation = gql`
-  mutation CreateJob($input: CreateJobInput!) {
-    job: createJob(input: $input) {
-      ...JobDetail
-    }
-  }
-  ${jobDetailFragment}
-`;
+export async function getJob(id) {
+    const query = gql`
+        query JobById($id: ID!) {
+            job(id: $id) {
+                id
+                date
+                title
+                company {
+                    id
+                    name
+                }
+                description
+            }
+        }
+    `;
+    const { job } = await client.request(query, { id });
+    return job;
+}
+
+export async function getJobs() {
+    const query = gql`
+        query {
+            jobs {
+                id
+                date
+                title
+                company {
+                    id
+                    name
+                }
+            }
+        }
+    `;
+
+    const { jobs } = await client.request(query);
+    return jobs;
+}

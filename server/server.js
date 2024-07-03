@@ -6,7 +6,7 @@ import { readFile } from "node:fs/promises";
 import {resolvers} from "./resolvers.js";
 
 
-const PORT = 3000;
+const PORT = 9000;
 
 const app = express();
 app.use(express.json());
